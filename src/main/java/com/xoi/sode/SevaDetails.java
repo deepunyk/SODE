@@ -110,7 +110,7 @@ public class SevaDetails extends AppCompatActivity {
     }
 
     private void initRecyclerView(){
-        recyclerView = findViewById(R.id.seva_rec);
+        recyclerView = findViewById(R.id.sevaDetails_rec);
         Seva_RecyclerView_Adapter adapter = new Seva_RecyclerView_Adapter(name,price,this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

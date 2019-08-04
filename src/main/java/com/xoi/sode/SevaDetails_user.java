@@ -8,10 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -28,34 +24,31 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class UserDetails extends AppCompatActivity {
+public class SevaDetails_user extends AppCompatActivity {
 
-    private ArrayList<String> name = new ArrayList<>();
-    private ArrayList<String> password = new ArrayList<>();
-    private ArrayList<String> email = new ArrayList<>();
-    private ArrayList<String> address = new ArrayList<>();
-    private ArrayList<String> city = new ArrayList<>();
-    RecyclerView recyclerView;
     ProgressDialog loader;
+    private ArrayList<String> name = new ArrayList<>();
+    private ArrayList<String> price = new ArrayList<>();
+    RecyclerView recyclerView;
     SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_details);
-
+        setContentView(R.layout.activity_seva_details_user);
         loader = new ProgressDialog(this);
+        sharedPreferences = this.getSharedPreferences("com.xoi.smvitm", Context.MODE_PRIVATE);
+        getSevas();
 
-        getUserDetails();
     }
 
-    private void getUserDetails() {
-        loader.setTitle("Collecting user details");
+    private void getSevas() {
+        loader.setTitle("Collecting seva details");
         loader.setMessage("Please wait...");
         loader.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         loader.setCancelable(false);
         loader.show();
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, "https://script.google.com/macros/s/AKfycbz7ngw3YerftG8MHMVSL5fTIbdL_BeORT1lgz-9PA0DwzMGjZAN/exec?action=getAllUserDetails",
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, "https://script.google.com/macros/s/AKfycbxufJ2ccpC_LkcRqME7le-6n5XyQPFDV2AxU52YzyF7rz4hnLrZ/exec?action=getAllSevas",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -80,20 +73,14 @@ public class UserDetails extends AppCompatActivity {
     private void parseItems(String jsonResposnce) {
         try {
             JSONObject jobj = new JSONObject(jsonResposnce);
-            JSONArray jarray = jobj.getJSONArray("users");
+            JSONArray jarray = jobj.getJSONArray("seva");
 
             for (int i = 0; i < jarray.length(); i++) {
                 JSONObject jo = jarray.getJSONObject(i);
                 String name_json = jo.getString("name");
                 name.add(name_json);
-                String password_json = jo.getString("password");
-                password.add(password_json);
-                String email_json = jo.getString("email");
-                email.add(email_json);
-                String address_json = jo.getString("address");
-                address.add(address_json);
-                String city_json = jo.getString("city");
-                city.add(city_json);
+                String price_json = jo.getString("price");
+                price.add(price_json);
             }
             initRecyclerView();
         } catch (JSONException e) {
@@ -101,18 +88,27 @@ public class UserDetails extends AppCompatActivity {
         }
     }
 
-    private void initRecyclerView(){
-        recyclerView = findViewById(R.id.userDetails_rec);
-        UserDetails_RecyclerView_Adapter adapter = new UserDetails_RecyclerView_Adapter(name,password,email,address,city,this);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        loader.dismiss();
-    }
 
     @Override
     public void onBackPressed() {
-        Intent i = new Intent(UserDetails.this, Admin_main.class);
+        String login;
+        login = sharedPreferences.getString("Login","");
+        Intent i;
+        if(login.equals("A")) {
+            i = new Intent(SevaDetails_user.this, Admin_main.class);
+        }
+        else{
+            i = new Intent(SevaDetails_user.this, User_main.class);
+        }
         startActivity(i);
         finish();
+    }
+
+    private void initRecyclerView(){
+        recyclerView = findViewById(R.id.sevaDetails_rec);
+        Seva_RecyclerView_Adapter adapter = new Seva_RecyclerView_Adapter(name,price,this);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        loader.dismiss();
     }
 }

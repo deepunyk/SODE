@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Payment_user"></activity>
+        <activity android:name=".SevaDetails_user"></activity>
+        <activity android:name=".Payment_user" />
         <activity android:name=".SevaDetails_User" />
         <activity android:name=".User_main" />
         <activity android:name=".SevaDetails" />
